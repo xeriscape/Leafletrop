@@ -37,7 +37,7 @@ public class CollisionTest extends GameScene {
 	 */
 	public void start() throws Exception {
 		//Initialise display
-		this.screenHeight = 700;// GLOBALS.default_screen_height ;
+		this.screenHeight = GLOBALS.default_screen_height ;
 		this.screenWidth = GLOBALS.default_screen_width;
 		this.initGL("Leafletrop - Collision and Map Test");
 
