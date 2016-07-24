@@ -5,6 +5,8 @@ package util2d.core.helper;
 
 import java.awt.geom.Point2D;
 
+import util2d.core.GLOBALS;
+
 /**
  * @author Kaye
  *
@@ -15,8 +17,14 @@ public class Projectile extends util2d.core.Collisible {
 	double xSpeed=0.0, ySpeed=0.0; //Current movement speed
 	double xChange=0.0, yChange=0.0; //Changes in movement speed
 	int bouncesRemaining=0; //Governs whether the projectile bounces off objects
-	int timeToLive=0; //In milliseconds
+	int timeToLive=0; //In frames
 	int type = Projectile.GENERAL_PROJECTILE; //Does it hit players only, enemies only, or either?
+	
+	//W/seconds
+	public Projectile(double xSpeed, double ySpeed, double xChange, double yChange, int bouncesRemaining, double secondsToLive, int type, Animation[] anims, Point2D.Double origin)
+	{
+		this(xSpeed, ySpeed, xChange, yChange, bouncesRemaining, GLOBALS.secondsToFrames(secondsToLive), type, anims, origin);
+	}
 	
 	//Full constructor
 	public Projectile(double xSpeed, double ySpeed, double xChange, double yChange, int bouncesRemaining, int timeToLive, int type, Animation[] anims, Point2D.Double origin)

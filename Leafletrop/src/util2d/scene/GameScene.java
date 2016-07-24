@@ -21,7 +21,7 @@ public class GameScene extends Scene {
 
 	protected int screenHeight=0, screenWidth=0;
 	protected Map sceneMap = null;
-	protected int framerate = 60;
+	
 	protected Renderable playerCharacter;
 
 	Object[] renderOrder = null;
@@ -127,7 +127,7 @@ public class GameScene extends Scene {
 
 		//5.) Done, display the results
 		Display.update();
-		Display.sync(framerate);
+		Display.sync(GLOBALS.framerate);
 	}
 
 	/**

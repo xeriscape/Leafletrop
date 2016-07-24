@@ -3,6 +3,8 @@ import java.util.ArrayList;
 
 import org.newdawn.slick.opengl.Texture;
 
+import util2d.core.GLOBALS;
+
 /**
  * An Animation consists of a set of Textures and a set of integers that describe for how many frames
  * each Texture will be displayed. 
@@ -24,11 +26,21 @@ public class Animation {
 
 	//Constructors	
 	/**
-	 * Create a new Animation. All images will be evenly spaced (each delay being 60 frames)
+	 * Create a new Animation. All images will be evenly spaced (each delay being one second)
 	 * @param a_f Set of Textures forming the Animation
 	 */
 	public Animation(ArrayList<Texture> a_f) {
-		this(a_f, 60);
+		this(a_f, GLOBALS.secondsToFrames(1.0));
+	}
+	
+	/**
+	 * Create a new Animation. All images will be evenly spaced (using the specified delay)
+	 * @param a_f Set of Textures forming the Animation
+	 * @param delay Number of seconds each image will be displayed before moving to the next
+	 * @throws IllegalArgumentException Exception is thrown if specified delay is not greater than 0
+	 */
+	public Animation(ArrayList<Texture> a_f, double delaySeconds) throws IllegalArgumentException {
+		this(a_f, GLOBALS.secondsToFrames(delaySeconds));
 	}
 	
 	/**
@@ -50,6 +62,34 @@ public class Animation {
 		this.animation_frames = new Texture[a.length];
 		this.animation_delay = new int[a.length];
 		for (int i = 0; i < a.length; i++) {animation_delay[i]=delay;}
+		
+		System.arraycopy(a, 0, animation_frames, 0, a.length);
+		
+		this.delay_counter = 0;
+		this.current_frame_number = 0;
+		this.current_frame = this.animation_frames[0];
+		this.current_delay = this.animation_delay[0];
+	}
+	
+	/**
+	 * @param a_f
+	 * @param delays
+	 * @throws IllegalArgumentException Exception is thrown if set of delays and set of frames are not the same size
+	 */
+	public Animation(ArrayList<Texture> a_f, double[] delaysDouble) throws IllegalArgumentException {
+		int[] delays = new int[delaysDouble.length];
+		for (int i = 0; i < delaysDouble.length; i++) delays[i]=GLOBALS.secondsToFrames(delaysDouble[i]);
+
+
+		if (delays.length != a_f.size()) {
+			throw new IllegalArgumentException("Array sizes do not match: "+a_f.size()+" vs. "+delays.length);
+		}
+		
+		Texture[] a = a_f.toArray(new Texture[0]);
+		
+		this.animation_frames = new Texture[a.length];
+		this.animation_delay = new int[a.length];
+		for (int i = 0; i < a.length; i++) {animation_delay[i]=delays[i];}
 		
 		System.arraycopy(a, 0, animation_frames, 0, a.length);
 		

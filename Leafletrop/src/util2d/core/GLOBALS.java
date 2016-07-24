@@ -12,4 +12,14 @@ public final class GLOBALS {
 	public static final double height_factor = ((double) default_character_height/(double) assumed_char_height);
 
 	public static final double transparency_foreground = 0.3;
+	
+	public static final int framerate = 60; //FPS
+	
+	public static double framesToSeconds(int numberFrames) {
+		return ((double) numberFrames)/((double) framerate);
+	}
+	
+	public static int secondsToFrames(double numberSeconds) {
+		return ((int) Math.ceil((numberSeconds * framerate)));
+	}
 }
