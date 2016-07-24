@@ -18,18 +18,18 @@ import util2d.core.Renderable;
 import util2d.map.Map;
 
 public class GameScene extends Scene {
-	
+
 	protected int screenHeight=0, screenWidth=0;
 	protected Map sceneMap = null;
 	protected int framerate = 60;
 	protected Renderable playerCharacter;
-	
+
 	Object[] renderOrder = null;
 	int maxFrameCount = 5;
 	int frameCount = maxFrameCount;
 	public boolean orderInvalid = true;
-	
-	
+
+
 	/**
 	 * Retrieve the set of Renderables at a given Point2D.Double. USE SPARINGLY!
 	 * 
@@ -39,11 +39,11 @@ public class GameScene extends Scene {
 	public static Renderable[] getRenderableAt(Point2D.Double coordinates, Renderable[] toRender) {
 		//Helper function, use sparingly
 		ArrayList<Renderable> results = new ArrayList<Renderable>();
-		
+
 		for (Renderable r:toRender) {
 			if (r.boundingRectangle().contains(coordinates)) results.add(r);
 		}
-		
+
 		return (Renderable[]) results.toArray();
 	}
 
@@ -61,10 +61,10 @@ public class GameScene extends Scene {
 		ValueComparator bvc = new ValueComparator(hm);
 		TreeMap<Integer, Double> sorted_map = new TreeMap<Integer, Double>(bvc);
 		sorted_map.putAll(hm);
-		
+
 		return sorted_map.keySet().toArray();
 	}
-	
+
 	/**
 	 * The GameScene's main method, rendering all objects belonging to the scene in the appropriate order (background, tiles, Renderables)
 	 * 
@@ -73,13 +73,13 @@ public class GameScene extends Scene {
 	public void update(Renderable[] toRender) throws IllegalArgumentException, CloneNotSupportedException {
 		//1.) Clear screen
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-		
+
 		//2.) Render background
 		if (this.background != null) this.background.render();
-		
+
 		//3.) Render map
 		if (this.sceneMap != null) this.sceneMap.render();
-		
+
 		//4.) Render objects
 		//   a) Re-establish rendering order
 		frameCount++;
@@ -92,7 +92,7 @@ public class GameScene extends Scene {
 			this.renderOrder = getRenderingOrder(toRender);
 			frameCount = 0; orderInvalid = false;
 		}
-		
+
 		//   b) Process behavior of actors
 		for (Renderable r:toRender) {
 			if (r instanceof util2d.actor.Actor) {
@@ -101,27 +101,30 @@ public class GameScene extends Scene {
 				}
 			}
 		}	
-		
+
 		//   c) Render objects in the previously established order
 		for (int i = 0; i < renderOrder.length; i++) {
 			int j = (Integer) renderOrder[i];
-			
-			//Am I an object that's blocking view of the player character? If so, transparency
+
+			//Am I an object that's blocking view of the player character? If so, render semi-transparently
 			toRender[j].transparency = 0.0;
-			if (toRender[j].respectsForegroundTransparency && !(toRender[j].equals(this.playerCharacter)) && GLOBALS.transparency_foreground > 0) {
-				if ((toRender[j].reducedBoundingRectangle(10, 10).intersects(this.playerCharacter.smallBoundingRectangle()))) {
-					if (toRender[j].fullBoundingRectangle().getMaxY() > playerCharacter.fullBoundingRectangle().getMaxY()) {
-						toRender[j].transparency = GLOBALS.transparency_foreground;
+			//Try to do the less expensive checks first
+			if (toRender[j].respectsForegroundTransparency && GLOBALS.transparency_foreground > 0) {
+				if (!(toRender[j].equals(this.playerCharacter)))  {
+					if ((toRender[j].reducedBoundingRectangle(10, 10).intersects(this.playerCharacter.smallBoundingRectangle()))) {
+						if (toRender[j].fullBoundingRectangle().getMaxY() > playerCharacter.fullBoundingRectangle().getMaxY()) {
+							toRender[j].transparency = GLOBALS.transparency_foreground;
+						}
 					}
 				}
 			}
-			
-			
+
+
 			//Collisibles require special logic to avoid duplicate collision checks
 			if (toRender[j] instanceof Collisible) ((Collisible) toRender[j]).render(toRender, j+1, toRender.length, this.sceneMap);
 			else toRender[j].render(toRender[j].getCurrentPosition());
 		}		
-		
+
 		//5.) Done, display the results
 		Display.update();
 		Display.sync(framerate);
@@ -134,7 +137,7 @@ public class GameScene extends Scene {
 	public void start() throws Exception {
 		this.start("New Scene");
 	}
-	
+
 	/**
 	 * Start the scene. This method needs to be overwritten.
 	 * 
@@ -143,7 +146,7 @@ public class GameScene extends Scene {
 	public void start(String title) {
 		this.initGL(title);
 	}
-	
+
 	/**
 	 * Initialise the display, GL parameters etc.
 	 * 
@@ -176,7 +179,7 @@ public class GameScene extends Scene {
 		GL11.glOrtho(0, screenWidth, screenHeight, 0, 1, -1);
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 	}
-	
+
 	/**
 	 * Initialise the GL display, using screenWidth and screenHeight
 	 */
@@ -191,18 +194,18 @@ public class GameScene extends Scene {
  * 
  */
 class ValueComparator implements Comparator {
-    HashMap<Integer, Double> base;
+	HashMap<Integer, Double> base;
 
-    public ValueComparator(HashMap<Integer, Double> hm) {
-        this.base = hm;
-    }
+	public ValueComparator(HashMap<Integer, Double> hm) {
+		this.base = hm;
+	}
 
-    // Note: this comparator imposes orderings that are inconsistent with equals.
-    public int compare(Object a, Object b) {
-        if (((java.util.Map<Integer, Double>) base).get(a) >= ((java.util.Map<Integer, Double>) base).get(b)) {
-            return 1;
-        } else {
-            return -1;
-        } // returning 0 would merge keys
-    }
+	// Note: this comparator imposes orderings that are inconsistent with equals.
+	public int compare(Object a, Object b) {
+		if (((java.util.Map<Integer, Double>) base).get(a) >= ((java.util.Map<Integer, Double>) base).get(b)) {
+			return 1;
+		} else {
+			return -1;
+		} // returning 0 would merge keys
+	}
 }

@@ -13,6 +13,7 @@ public class Actor extends Collisible {
 	
 	public Actor(Animation[] anims, Point2D.Double where) {
 		super(anims, where);
+		this.respectsForegroundTransparency = false; //Actors do not go semi-transparent
 	}
 	
 	public Actor(Animation[] anims) {

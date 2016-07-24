@@ -63,6 +63,12 @@ public class Renderable extends Object implements Cloneable {
 
 	//--------------------------------------------------------------------------------------------------------
 
+	public boolean equals(Object o) {
+		if (o == null) return false;
+		else if (o instanceof Renderable) return this.ID == ((Renderable) o).ID;
+		else return ((Object) this).equals(o);
+		}
+	
 	public String getID() {
 		return this.ID;
 	}
