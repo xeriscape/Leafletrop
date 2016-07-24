@@ -10,6 +10,7 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
+import misc.Identity;
 import util2d.actor.Addon;
 
 /**
@@ -20,7 +21,7 @@ import util2d.actor.Addon;
  * This is to allow "object-based" rendering in the "main loop".
  *
  */
-public class Renderable extends Object implements Cloneable {
+public class Renderable extends Identity implements Cloneable {
 	//Texture
 	protected Texture t;
 
@@ -51,10 +52,6 @@ public class Renderable extends Object implements Cloneable {
 	private static Texture shadowTexture = null;
 	
 	protected ArrayList<Addon> addons = null;
-
-	//Identity
-	public String friendlyName ="";
-	private String ID="";
 	
 	//Stuff
 	public double transparency=0.0;
@@ -65,13 +62,9 @@ public class Renderable extends Object implements Cloneable {
 
 	public boolean equals(Object o) {
 		if (o == null) return false;
-		else if (o instanceof Renderable) return this.ID == ((Renderable) o).ID;
+		else if (o instanceof Renderable) return this.getID() == ((Renderable) o).getID();
 		else return ((Object) this).equals(o);
 		}
-	
-	public String getID() {
-		return this.ID;
-	}
 
 	/**
 	 * Creates a Renderable displaying the texture tx at point p, with dimensions width and height.
@@ -82,13 +75,13 @@ public class Renderable extends Object implements Cloneable {
 	 * @param height Vertical size of the texture (leave blank to use texture height)
 	 */
 	public Renderable(Texture tx, Point2D.Double p, int width, int height) {
+		super();
+		
 		this.t = tx;
 		this.currentPosition = p;
 		this.dimensions[0] = width;
 		this.dimensions[1] = height;
 		this.addons = new ArrayList<Addon>();
-
-		this.ID = UUID.randomUUID().toString();
 	}
 
 
