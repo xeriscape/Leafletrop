@@ -8,9 +8,9 @@ import util2d.core.helper.Acceleration;
 import util2d.core.helper.Animation;
 
 public class Movable extends Animatable implements Cloneable {
-	
+
 	//TODO: Everything regarding different movement modes is a complete and utter mess.
-	
+
 	public static final int MODE_LINEAR=0, MODE_ACCELERATE=1, MODE_OFF=-1;
 	final int STATE_STOPPED=0, STATE_PAUSED=1, STATE_MOVING=2; //TODO: Deceleration
 
@@ -30,10 +30,17 @@ public class Movable extends Animatable implements Cloneable {
 		this.distancePerSecond = distancePerSecond;
 	}
 
+	public double getDistancePerFrame() {
+		return this.distancePerSecond/GLOBALS.secondsToFrames(1);
+	}
+	public void setdistancePerFrame(double distancePerFrame) {
+		this.distancePerSecond = GLOBALS.framesToSeconds(1)*distancePerFrame;
+	}
+
 	double accelerationPercentage;
 	double currentSpeed;
 	int currentMode=MODE_LINEAR, currentState=STATE_STOPPED;
-	public Point2D.Double currentGoal;
+	public Point2D.Double currentGoal, currentOverrideGoal = null;
 	double velocityAccelerationRate = 1.0;
 
 	//How does movement affect animations?
@@ -44,7 +51,7 @@ public class Movable extends Animatable implements Cloneable {
 	protected boolean skip_next_x = false, skip_next_y = false;
 	private boolean skip_last_x = false;
 	private boolean skip_last_y = false;
-	
+
 	ArrayList<Acceleration> accelerations = new ArrayList<Acceleration>();
 
 	/**
@@ -131,14 +138,15 @@ public class Movable extends Animatable implements Cloneable {
 	public void addAcceleration(Acceleration arg0) {
 		this.accelerations.add(arg0);
 	}
-	
-	
+
+
 	/**
 	 * Immediately abort all movement, set state to STATE_STOPPED and do NOT preserve goal/waypoints
 	 */
 	public void stop() {
 		this.waypoints = null;
 		this.currentGoal = null;
+		this.currentOverrideGoal = null;
 		this.currentState = STATE_STOPPED;
 		this.currentSpeed = 0.0;
 		this.acc_x = this.acc_y = 0.0;
@@ -154,7 +162,7 @@ public class Movable extends Animatable implements Cloneable {
 			this.currentGoal = new Point2D.Double(this.currentPosition.x, this.currentGoal.y);
 
 			if (this.currentGoal == this.currentPosition) this.stop();
-			
+
 			this.acc_x = 0.0;
 		}
 	}
@@ -168,7 +176,7 @@ public class Movable extends Animatable implements Cloneable {
 			this.currentGoal = new Point2D.Double(this.currentGoal.x, this.currentPosition.y);
 
 			if (this.currentGoal == this.currentPosition) this.stop();
-			
+
 			this.acc_y = 0.0;
 		}
 	}
@@ -239,11 +247,11 @@ public class Movable extends Animatable implements Cloneable {
 
 			return d;
 		}
-		
+
 		//Velocity mode?
 		double additional_x = 0.0, additional_y = 0.0;
 		//Process accelerations. Note: Do not make changes permanent, as this function may be called several times per frame.
-		
+
 		//Process all accelerations one after another
 		for (int i = 0; i < this.accelerations.size(); i++) {
 			//Accelerations may be divided over several frames
@@ -259,7 +267,7 @@ public class Movable extends Animatable implements Cloneable {
 			//Expired accelerations can be removed
 			else { this.accelerations.remove(i); }
 		}
-		
+
 		//If we're moving in velocity mode, just return what we have after accelerations have been processed
 		if (this.goal_mode == MOVE_WITH_VELOCITY ) {
 			double[] res = {this.acc_x+additional_x, this.acc_y+additional_y };
@@ -277,7 +285,7 @@ public class Movable extends Animatable implements Cloneable {
 	public Point2D.Double calculateNextPosition() {
 		return this.calculateNextPosition(1);
 	}
-	
+
 	/**
 	 * Figure out where the object will be in n frames.
 	 * 
@@ -298,11 +306,15 @@ public class Movable extends Animatable implements Cloneable {
 	 * 
 	 */	
 	private void executeMove() {		
+		//First figure out if we're moving
+		Point2D.Double storeGoal = this.currentGoal;
+		if (this.currentOverrideGoal != null) this.currentGoal = this.currentOverrideGoal;
+
 		//Execute the movement
 		this.currentPosition = this.calculateNextPosition();
 		this.setSkip_last_x(this.skip_next_x); this.setSkip_last_y(this.skip_next_y); //Remember whether we skipped the movement
 		this.skip_next_x = this.skip_next_y = false; //Never skip more than one movement
-		
+
 		//Make the effect of the accelerations permanent
 		for (int i = 0; i < this.accelerations.size(); i++) {
 			//Accelerations may be divided over several frames
@@ -321,23 +333,29 @@ public class Movable extends Animatable implements Cloneable {
 		}
 
 		//Close enough to goal? If so, stop
-		if ((Math.abs(this.currentPosition.x - this.currentGoal.x) < 1.5) && ((Math.abs(this.currentPosition.y - this.currentGoal.y) < 1.5)))
+		if ((Math.abs(this.currentPosition.x - this.currentGoal.x) < 1.5) && ((Math.abs(this.currentPosition.y - this.currentGoal.y) < 1.5))) {
+			this.currentGoal = storeGoal;
+			this.currentOverrideGoal = null;
 			this.stop();
+		}
 
-
-		if (this.waypoints != null) { //Are we in waypoint mode?
-			if (this.waypoints.size() > 0) { //... and have waypoints left?
-				//... and are sufficiently close to our goal? (It will never be == due to rounding errors etc.)
-				if ((Math.abs(this.currentPosition.x - this.currentGoal.x) < 2.0) && ((Math.abs(this.currentPosition.y - this.currentGoal.y) < 2.0))) {
-					this.currentGoal = this.waypoints.get(0); 
-					this.waypoints.remove(0);
-					if (this.waypoints.size() == 0) this.waypoints = null;
-					//If so, move to the next waypoint...and remove it from the list...and kill the reference if needed
+		//Otherwise, are we in waypoint mode?
+		else {
+			if (this.waypoints != null) { //Are we in waypoint mode?
+				if (this.waypoints.size() > 0) { //... and have waypoints left?
+					//... and are sufficiently close to our goal? (It will never be == due to rounding errors etc.)
+					if ((Math.abs(this.currentPosition.x - this.currentGoal.x) < 2.0) && ((Math.abs(this.currentPosition.y - this.currentGoal.y) < 2.0))) {
+						this.currentGoal = this.waypoints.get(0); 
+						this.waypoints.remove(0);
+						if (this.waypoints.size() == 0) this.waypoints = null;
+						//If so, move to the next waypoint...and remove it from the list...and kill the reference if needed
+					}
 				}
 			}
+			this.currentGoal = storeGoal; //Restore goal
 		}
 	}
-	
+
 	/**
 	 * Default bounding rectangle of the object at its current position.
 	 * 
@@ -345,7 +363,7 @@ public class Movable extends Animatable implements Cloneable {
 	public Rectangle2D.Double boundingRectangle() {
 		return super.boundingRectangle();
 	}
-	
+
 	/**
 	 * Default bounding rectangle of the object several steps in the future.
 	 * 
@@ -355,7 +373,7 @@ public class Movable extends Animatable implements Cloneable {
 	public Rectangle2D.Double boundingRectangle(double d) {
 		return super.boundingRectangle(this.calculateNextPosition(d));
 	}
-	
+
 	/**
 	 * Small bounding rectangle of the object at its current position.
 	 * 
@@ -363,7 +381,7 @@ public class Movable extends Animatable implements Cloneable {
 	public Rectangle2D.Double smallBoundingRectangle() {
 		return super.smallBoundingRectangle();
 	}
-	
+
 	/**
 	 * Small bounding rectangle of the object several steps in the future.
 	 * 
@@ -373,7 +391,7 @@ public class Movable extends Animatable implements Cloneable {
 	public Rectangle2D.Double smallBoundingRectangle(int steps) {
 		return super.smallBoundingRectangle(this.calculateNextPosition(steps));
 	}
-	
+
 	/**
 	 * Large bounding rectangle of the object at its current position.
 	 * 
@@ -381,7 +399,7 @@ public class Movable extends Animatable implements Cloneable {
 	public Rectangle2D.Double fullBoundingRectangle() {
 		return super.fullBoundingRectangle();
 	}
-	
+
 	/**
 	 * Large bounding rectangle of the object several steps in the future.
 	 * 
@@ -410,4 +428,34 @@ public class Movable extends Animatable implements Cloneable {
 		this.skip_last_x = skip_last_x;
 	}
 
+	public java.awt.Polygon movementShape(int steps) {
+		Rectangle2D.Double origin = this.fullBoundingRectangle(0);
+		Rectangle2D.Double destination = this.fullBoundingRectangle(steps);
+		Rectangle2D.Double temp = null;
+		
+		java.awt.Polygon result = new java.awt.Polygon();
+		
+		if (origin.getMinX() > destination.getMinX()) {temp = origin; origin = destination; destination = temp;}
+		
+		if (origin.getMinX() <= destination.getMinX()) {
+			if (origin.getMinY() <= destination.getMinY()) {	
+				result.addPoint((int) origin.getMinX(), (int) origin.getMinY()); //Top left, top left
+				result.addPoint((int) origin.getMaxX(), (int) origin.getMinY()); //Top left, top right
+				result.addPoint((int) origin.getMinX(), (int) origin.getMaxY()); //Top left, bottom left
+				result.addPoint((int) destination.getMinX(), (int) destination.getMaxY()); //Bottom right, bottom left
+				result.addPoint((int) destination.getMaxX(), (int) destination.getMaxY()); //Bottom right, bottom right
+				result.addPoint((int) destination.getMaxX(), (int) destination.getMinY()); //Bottom right, top right
+			}
+			else {
+				result.addPoint((int) origin.getMinX(), (int) origin.getMinY()); //Bottom left, top left
+				result.addPoint((int) origin.getMinX(), (int) origin.getMaxY()); //Bottom left, bottom left
+				result.addPoint((int) origin.getMaxX(), (int) origin.getMaxY()); //Bottom left, bottom right
+				result.addPoint((int) destination.getMinX(), (int) destination.getMinY()); //Top right, top right
+				result.addPoint((int) destination.getMaxX(), (int) destination.getMaxY()); //Top right, bottom right
+				result.addPoint((int) destination.getMaxX(), (int) destination.getMinY()); //Top right, top right
+			}
+		}
+		
+		return result;
+	}
 }

@@ -64,6 +64,8 @@ public class CollisionTest extends GameScene {
 			this.sceneMap.tileAtCoordinates(new Point2D.Double(0, screenHeight-1)).doRender = false;
 			this.sceneMap.tileAtCoordinates(new Point2D.Double(screenWidth-1, 1)).doRender = false;
 			this.sceneMap.tileAtCoordinates(new Point2D.Double(screenWidth-1, screenHeight-1)).doRender = false;
+			
+			GLOBALS.currentMap = this;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -174,6 +176,8 @@ public class CollisionTest extends GameScene {
 		}
 
 		this.playerCharacter = isToBeRendered[0];
+		GLOBALS.playerCharacter = this.playerCharacter;
+		
 		isToBeRendered[0].setWidth(68);
 		isToBeRendered[0].setHeight(124);
 		System.err.print("\n\n"+this.playerCharacter.getWidth());

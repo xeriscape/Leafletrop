@@ -4,9 +4,9 @@ import java.util.UUID;
 
 public class Identity {
 	public String friendlyName ="";
-	private String ID="";
+	private UUID ID=null;
 	
-	public String getID() {
+	public UUID getID() {
 		return this.ID;
 	}
 	
@@ -14,8 +14,8 @@ public class Identity {
 	 * Create an Identity without a name
 	 */
 	public Identity() {
-		this.ID = UUID.randomUUID().toString();
-		this.friendlyName = this.ID;
+		this.ID = UUID.randomUUID();
+		this.friendlyName = this.ID.toString();
 	}
 	
 	/** 
@@ -23,7 +23,7 @@ public class Identity {
 	 * @param friendlyName What to call the Identity
 	 */
 	public Identity(String friendlyName) {
-		this.ID = UUID.randomUUID().toString();
+		this.ID = UUID.randomUUID();
 		this.friendlyName = friendlyName;
 	}
 	

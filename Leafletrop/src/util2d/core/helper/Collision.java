@@ -4,13 +4,18 @@
 package util2d.core.helper;
 
 import java.awt.geom.Point2D;
+import java.awt.Polygon;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.Rectangle2D.Double;
+
 import util2d.core.Movable;
 import util2d.core.Renderable;
 import util2d.map.Map;
+import java.awt.geom.Area; 
+
+
 
 /**
- * @author Kaye
  * 
  * Helper functions useful in collision processing - mostly figuring out whether a Renderable collides with a Tile,
  * or whether a Renderable collides with another Renderable, or whether that is going to happen next move.
@@ -39,8 +44,7 @@ public class Collision {
 		Point2D.Double[] result = {topLeft, topRight, bottomLeft, bottomRight};
 		return result;
 	}
-	
-	
+		
 	/**
 	 * Figure out if an object will collide with a non-passable tile next move.
 	 * 
@@ -81,6 +85,25 @@ public class Collision {
 		
 		
 	}
+	
+	public static Rectangle2D.Double checkCollisionRectangle(Area area, Renderable b, int minPixels) {		
+		Rectangle2D.Double checkB=new Rectangle2D.Double();
+		
+		
+		if (b instanceof Movable) checkB = ((Movable) b).boundingRectangle(1); //.setRect(((Movable) b).calculateNextPosition(1).getX(), ((Movable) b).calculateNextPosition(1).getY(), b.getWidth(), b.getHeight());
+		else 					  checkB= b.boundingRectangle();//.setRect(b.currentPosition.x, b.currentPosition.y, b.getWidth(), b.getHeight());
+		
+		Area d = new Area(area);
+		Area c = new Area(checkB.getBounds2D());
+		
+		d.intersect(c); 
+		
+		Rectangle2D e = d.getBounds();
+		
+		Rectangle2D.Double collisionResult = new Rectangle2D.Double(e.getMinX(), e.getMinY(), Math.max(e.getWidth(), 1), Math.max(e.getHeight(), 1)); 
+		
+		return (Double) collisionResult;
+		}
 	
 	/**
 	 * Figure out if and how two Renderables collide.

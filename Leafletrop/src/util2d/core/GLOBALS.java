@@ -1,6 +1,7 @@
 package util2d.core;
 
 import util2d.actor.Actor;
+import util2d.scene.GameScene;
 
 public final class GLOBALS {
 	//AKA globals
@@ -20,6 +21,11 @@ public final class GLOBALS {
 	}
 	
 	public static int secondsToFrames(double numberSeconds) {
+		System.err.println(""+((int) Math.ceil((numberSeconds * framerate)))+" frames in "+numberSeconds+" seconds");
 		return ((int) Math.ceil((numberSeconds * framerate)));
 	}
+	
+	public static Renderable playerCharacter;
+	
+	public static GameScene currentMap;
 }

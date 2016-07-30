@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
@@ -29,6 +30,29 @@ public class GameScene extends Scene {
 	int frameCount = maxFrameCount;
 	public boolean orderInvalid = true;
 
+	/**
+	 * Retrieve the set of Renderables at a given Point2D.Double. USE SPARINGLY!
+	 * 
+	 * @param coordinates The coordinates to check
+	 * @returns An array of all Renderables which touch or overlap the given point.
+	 */
+	public boolean isOtherRenderableAt(Point2D.Double coordinates, Renderable[] toRender, Renderable[] toExclude) {
+		//Helper function, use sparingly
+		boolean result = false;
+		
+		HashMap<UUID, Renderable> checkAgainst = new HashMap<UUID, Renderable>();
+		for (Renderable r:toRender)  checkAgainst.put(r.getID(), r);
+		for (Renderable r:toExclude) checkAgainst.remove(r.getID());
+
+		for (Renderable r:checkAgainst.values() )
+			if (r.boundingRectangle().contains(coordinates))
+			{
+				result = true; 
+				break;
+			}
+
+		return result;
+	}
 
 	/**
 	 * Retrieve the set of Renderables at a given Point2D.Double. USE SPARINGLY!
@@ -44,7 +68,8 @@ public class GameScene extends Scene {
 			if (r.boundingRectangle().contains(coordinates)) results.add(r);
 		}
 
-		return (Renderable[]) results.toArray();
+		if (results.isEmpty()) return null;
+		else				   return (Renderable[]) results.toArray();
 	}
 
 	/**

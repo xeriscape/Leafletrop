@@ -1,5 +1,6 @@
 package util2d.core;
 
+import java.awt.geom.Area;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
@@ -38,6 +39,9 @@ public class Collisible extends Movable implements Cloneable {
 	 * @param m The map on which the Collisible is being displayed.
 	 */	
 	public void render(Renderable[] collisionCandidates, int minpos, int maxpos, Map m) throws IllegalArgumentException, CloneNotSupportedException {
+		//TODO: Split out the collision detection logic in the loop
+		//TODO: Allow for checks not at current position
+		
 		//Don't process collisions at all while we're in ignore-mode
 		if (this.ignore > 0) {
 			this.ignore--; 
@@ -55,22 +59,27 @@ public class Collisible extends Movable implements Cloneable {
 				Renderable r = collisionCandidates[i];
 				
 				if (!this.equals(r)) {//Don't process self-collisions
+					//((Movable) this).movementShape(0)
 					Rectangle2D.Double collisionResult = Collision.checkCollisionRectangle(this, r, 0);
 					
-					if (collisionResult != null) {//Is there a collision? Then process it
-						//TODO: Fix default behavior
+					if ((collisionResult != null)&&(collisionResult.getWidth()>0)&&(collisionResult.getHeight()>0)) {
+						//Is there a collision? Then process it						
+						//TODO: Then trigger Collisible's behavior
 						
-						//Can't move through objects!
-						boolean xCollision = Collision.checkHorizontalCollision(this, r, 0);
-						boolean yCollision = Collision.checkVerticalCollision(this, r, 0);
+						//Can't move through objects! Avoid setting skips to false if they were already true
+						if (Collision.checkHorizontalCollision(this, r, 0)) this.skip_next_x = true;
+						if (Collision.checkVerticalCollision(this, r, 0)) this.skip_next_y = true;
 						
-						if (r instanceof Collisible) {
+						/*if (r instanceof Collisible) {
 							//Establish some facts about the tiles in which collisions and collided objects are located
 							int[] collisionPosition = m.xyTile((int) Math.floor(collisionResult.getCenterX()), (int) Math.floor(collisionResult.getCenterY()));
 							int[] collidedPosition = m.xyTile((int) Math.floor(r.boundingRectangle().getCenterX()), (int) Math.floor(r.boundingRectangle().getCenterY()));
 							
 							//Figure out where bumps need to go
+							
+							//TODO: Fix bumping, somehow - rn it glitches thru Collisibles & blocked Tiles
 							double horiMov = 0.0, vertiMov = 0.0;
+							double xDelta = 0.0, yDelta = 0.0;
 							
 							if (collisionPosition[0] > collidedPosition[0] && xCollision) horiMov = +1.0;
 							else if (collisionPosition[0] < collidedPosition[0] && xCollision) horiMov = -1.0;
@@ -78,13 +87,36 @@ public class Collisible extends Movable implements Cloneable {
 							if (collisionPosition[1] > collidedPosition[1] && yCollision) vertiMov = +1.0;
 							else if (collisionPosition[1] < collidedPosition[1] && yCollision) vertiMov = -1.0;
 							
+							double fasterSpeed = Math.max(this.getDistancePerFrame(), ((Collisible) r).getDistancePerFrame());
+							double moveDelta = Math.max(fasterSpeed, 1.01);
+							//System.err.println(moveDelta);
+							//System.err.println(this.getDistancePerFrame());
+							
+							Renderable[] toExclude = {this, r};
+							
 							//Bump left/right
-							if (collisionResult.getCenterX() < r.boundingRectangle().getCenterX() && xCollision) r.currentPosition = new Point2D.Double(r.currentPosition.x + 3.0, r.currentPosition.y);
-							if (collisionResult.getCenterX() > r.boundingRectangle().getCenterX() && xCollision) r.currentPosition = new Point2D.Double(r.currentPosition.x - 3.0, r.currentPosition.y);
+							if (collisionResult.getCenterX() < r.boundingRectangle().getCenterX() && xCollision) {
+								//r.currentPosition = new Point2D.Double(r.currentPosition.x + 3.0, r.currentPosition.y);
+								boolean[] doMove = ((Collisible) r).isMoveOkay(((Renderable[])collisionCandidates), minpos, maxpos, m, 1.0*moveDelta, 0.0, toExclude);
+								if (doMove[0]) ((Collisible) r).setCurrentPosition(r.getCurrentPosition().x+moveDelta, r.getCurrentPosition().getY());
+								}
+							if (collisionResult.getCenterX() > r.boundingRectangle().getCenterX() && xCollision) {
+								//r.currentPosition = new Point2D.Double(r.currentPosition.x - 3.0, r.currentPosition.y);
+								boolean[] doMove = ((Collisible) r).isMoveOkay(((Renderable[])collisionCandidates), minpos, maxpos, m, -1.0*moveDelta, 0.0, toExclude);
+								if (doMove[0]) ((Collisible) r).setCurrentPosition(r.getCurrentPosition().x-moveDelta, r.getCurrentPosition().getY());
+								}
 							
 							//Bump up/down
-							if (collisionResult.getCenterY() < r.boundingRectangle().getCenterY() && yCollision ) r.currentPosition = new Point2D.Double(r.currentPosition.x, r.currentPosition.y +3.0);
-							if (collisionResult.getCenterY() > r.boundingRectangle().getCenterY() && yCollision ) r.currentPosition = new Point2D.Double(r.currentPosition.x, r.currentPosition.y -3.0);
+							if (collisionResult.getCenterY() < r.boundingRectangle().getCenterY() && yCollision){ 
+								// r.currentPosition = new Point2D.Double(r.currentPosition.x, r.currentPosition.y +3.0);
+								boolean[] doMove = ((Collisible) r).isMoveOkay(((Renderable[])collisionCandidates), minpos, maxpos, m, 0.0, 1.0*moveDelta, toExclude);
+								if (doMove[1]) r.setCurrentPosition(r.getCurrentPosition().x, r.getCurrentPosition().getY()+moveDelta);
+								}
+							if (collisionResult.getCenterY() > r.boundingRectangle().getCenterY() && yCollision) {/*yDelta = +3.0;
+								//r.currentPosition = new Point2D.Double(r.currentPosition.x, r.currentPosition.y -3.0);
+								boolean[] doMove = ((Collisible) r).isMoveOkay(((Renderable[])collisionCandidates), minpos, maxpos, m, 0.0, -1.0*moveDelta, toExclude);
+								if (doMove[1]) r.setCurrentPosition(r.getCurrentPosition().x, r.getCurrentPosition().getY()-moveDelta);
+							}
 							
 							//Do bumps
 							if (Math.abs(vertiMov) > 0 ) {
@@ -100,16 +132,13 @@ public class Collisible extends Movable implements Cloneable {
 								this.skip_next_x = true; this.stopX();
 							}
 							
-						}
-						
-						//Can't move through objects!
-						if (xCollision) {
-							this.skip_next_x = true;
-						}
-						
-						if (yCollision) {
-							this.skip_next_y = true;
-						}
+							//Bumps use move override
+							//if (((Collisible) r).isMoving() || ((Collisible) r).currentMode == Movable.MODE_OFF) ((Collisible) r).currentOverrideGoal = new Point2D.Double(r.currentPosition.x+xDelta, r.currentPosition.y+yDelta);
+							//else ((Collisible) r).moveTo(new Point2D.Double(r.currentPosition.x+xDelta, r.currentPosition.y+yDelta), MODE_LINEAR);
+							
+							
+							
+						}*/						
 					}
 				}
 			}
@@ -117,5 +146,6 @@ public class Collisible extends Movable implements Cloneable {
 		super.render(); //Next layer up: Handle movement
 	}
 	
+
 	public Object clone() throws CloneNotSupportedException {return super.clone();}
 }
