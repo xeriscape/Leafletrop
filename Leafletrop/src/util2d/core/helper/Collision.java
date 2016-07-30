@@ -4,7 +4,6 @@
 package util2d.core.helper;
 
 import java.awt.geom.Point2D;
-import java.awt.Polygon;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Double;
 
@@ -102,7 +101,7 @@ public class Collision {
 		
 		Rectangle2D.Double collisionResult = new Rectangle2D.Double(e.getMinX(), e.getMinY(), Math.max(e.getWidth(), 1), Math.max(e.getHeight(), 1)); 
 		
-		return (Double) collisionResult;
+		return collisionResult;
 		}
 	
 	/**

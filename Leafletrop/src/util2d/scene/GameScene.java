@@ -95,6 +95,7 @@ public class GameScene extends Scene {
 	 * 
 	 * @param toRender The Renderables to display.
 	 */
+	@Override
 	public void update(Renderable[] toRender) throws IllegalArgumentException, CloneNotSupportedException {
 		//1.) Clear screen
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
@@ -168,6 +169,7 @@ public class GameScene extends Scene {
 	 * 
 	 * @param title The title to display in the window.
 	 */
+	@Override
 	public void start(String title) {
 		this.initGL(title);
 	}
@@ -208,6 +210,7 @@ public class GameScene extends Scene {
 	/**
 	 * Initialise the GL display, using screenWidth and screenHeight
 	 */
+	@Override
 	public void initGL() {
 		this.initGL("New Scene");
 	}

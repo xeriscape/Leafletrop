@@ -16,12 +16,8 @@ import util2d.core.GLOBALS;
 import util2d.core.Movable;
 import util2d.core.Renderable;
 import util2d.core.helper.Animation;
-import util2d.core.helper.Shadow;
 import util2d.map.Map;
 import util2d.scene.GameScene;
-
-import java.util.*;
-import java.lang.*;
 
 public class CollisionTest extends GameScene {
 
@@ -35,6 +31,7 @@ public class CollisionTest extends GameScene {
 	 * @throws Exception 
 	 * @throws InstantiationException 
 	 */
+	@Override
 	public void start() throws Exception {
 		//Initialise display
 		this.screenHeight = GLOBALS.default_screen_height ;
@@ -276,6 +273,7 @@ public class CollisionTest extends GameScene {
 	 * @throws CloneNotSupportedException 
 	 * @throws IOException 
 	 */
+	@Override
 	public void update(Renderable[] toRender) throws IllegalArgumentException, CloneNotSupportedException {	
 		//Player controls
 		Movable n = (Movable) toRender[0];

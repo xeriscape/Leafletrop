@@ -4,7 +4,6 @@ import java.awt.geom.Point2D;
 
 import util2d.ai.Behavior;
 import util2d.core.Collisible;
-import util2d.core.Movable;
 import util2d.core.helper.Animation;
 
 public class Actor extends Collisible {

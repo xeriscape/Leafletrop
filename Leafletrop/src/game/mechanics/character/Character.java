@@ -1,9 +1,6 @@
 package game.mechanics.character;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import util2d.actor.Actor;
 
 public class Character {

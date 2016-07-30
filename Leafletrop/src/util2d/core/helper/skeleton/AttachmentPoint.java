@@ -1,7 +1,6 @@
 package util2d.core.helper.skeleton;
 
 import java.awt.geom.Point2D;
-import java.util.HashMap;
 
 public class AttachmentPoint {
 	static final String[] NAMES = {"HEAD", "UPPER_TORSO", "LOWER_TORSO", "L_ARM", "R_ARM", "L_LEG", "R_LEG", "SHADOW"};

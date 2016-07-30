@@ -192,6 +192,7 @@ public class Movable extends Animatable implements Cloneable {
 	/**
 	 * Display this Movable, processing all accelerations along the way, starting at its current position.
 	 */
+	@Override
 	public void render() {
 		this.render(this.currentPosition);
 	}
@@ -201,6 +202,7 @@ public class Movable extends Animatable implements Cloneable {
 	 * 
 	 * @param d Starting point for the Movable
 	 */
+	@Override
 	public void render(Point2D.Double d) {
 		if (this.currentState==STATE_MOVING) {
 			this.executeMove();
@@ -360,6 +362,7 @@ public class Movable extends Animatable implements Cloneable {
 	 * Default bounding rectangle of the object at its current position.
 	 * 
 	 */	
+	@Override
 	public Rectangle2D.Double boundingRectangle() {
 		return super.boundingRectangle();
 	}
@@ -378,6 +381,7 @@ public class Movable extends Animatable implements Cloneable {
 	 * Small bounding rectangle of the object at its current position.
 	 * 
 	 */	
+	@Override
 	public Rectangle2D.Double smallBoundingRectangle() {
 		return super.smallBoundingRectangle();
 	}
@@ -396,6 +400,7 @@ public class Movable extends Animatable implements Cloneable {
 	 * Large bounding rectangle of the object at its current position.
 	 * 
 	 */	
+	@Override
 	public Rectangle2D.Double fullBoundingRectangle() {
 		return super.fullBoundingRectangle();
 	}
@@ -410,6 +415,7 @@ public class Movable extends Animatable implements Cloneable {
 		return super.fullBoundingRectangle(this.calculateNextPosition(steps));
 	}
 
+	@Override
 	public Object clone() throws CloneNotSupportedException {return super.clone();}
 
 	public boolean isSkip_last_y() {

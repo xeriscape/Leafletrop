@@ -1,6 +1,5 @@
 package util2d.actor;
 
-import util2d.*;
 import org.newdawn.slick.opengl.Texture;
 
 //This'll follow another Renderable around

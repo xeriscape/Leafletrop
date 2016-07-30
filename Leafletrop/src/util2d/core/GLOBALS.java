@@ -1,6 +1,5 @@
 package util2d.core;
 
-import util2d.actor.Actor;
 import util2d.scene.GameScene;
 
 public final class GLOBALS {

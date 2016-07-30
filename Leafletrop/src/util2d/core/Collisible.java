@@ -1,6 +1,5 @@
 package util2d.core;
 
-import java.awt.geom.Area;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
@@ -147,5 +146,6 @@ public class Collisible extends Movable implements Cloneable {
 	}
 	
 
+	@Override
 	public Object clone() throws CloneNotSupportedException {return super.clone();}
 }

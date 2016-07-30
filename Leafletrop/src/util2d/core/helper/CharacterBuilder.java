@@ -1,8 +1,6 @@
 package util2d.core.helper;
 import util2d.actor.Actor;
-import util2d.actor.Addon;
 import util2d.core.*;
-import util2d.core.helper.skeleton.AttachmentPoint;
 import util2d.core.helper.skeleton.Skeleton;
 
 import java.awt.geom.Point2D;
@@ -62,10 +60,10 @@ public class CharacterBuilder {
 		/* Figuring out shadows involves mathematics */
 		/* ########### */
 		//Shadows are used to hint at bounding rects
-		Rectangle2D.Double calcRec = new Rectangle2D.Double(0 + (double) (1.0/10.5)*GLOBALS.default_character_width * GLOBALS.width_factor,
-				0 + (double) (6.0/7.0)*GLOBALS.default_character_height * GLOBALS.height_factor,
-				GLOBALS.default_character_width * GLOBALS.width_factor - (double) (2.0/10.5)*GLOBALS.default_character_width * GLOBALS.width_factor, 
-				(double) (GLOBALS.default_character_height * GLOBALS.height_factor/7.0)
+		Rectangle2D.Double calcRec = new Rectangle2D.Double(0 + 1.0/10.5*GLOBALS.default_character_width * GLOBALS.width_factor,
+				0 + 6.0/7.0*GLOBALS.default_character_height * GLOBALS.height_factor,
+				GLOBALS.default_character_width * GLOBALS.width_factor - 2.0/10.5*GLOBALS.default_character_width * GLOBALS.width_factor, 
+				GLOBALS.default_character_height * GLOBALS.height_factor/7.0
 				);
 		//Shadow encompasses the bounding rect. "Results obtained through direct experimentation."
 		double horiOffset = calcRec.getWidth()*0.2;    //Shadows are a bit larger than the actual collision rectangle,

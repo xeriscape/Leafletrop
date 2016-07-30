@@ -4,7 +4,6 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.UUID;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
@@ -60,6 +59,7 @@ public class Renderable extends Identity implements Cloneable {
 
 	//--------------------------------------------------------------------------------------------------------
 
+	@Override
 	public boolean equals(Object o) {
 		if (o == null) return false;
 		else if (o instanceof Renderable) return this.getID() == ((Renderable) o).getID();
@@ -142,6 +142,7 @@ public class Renderable extends Identity implements Cloneable {
 	/**
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		String result = "";
 
@@ -232,11 +233,11 @@ public class Renderable extends Identity implements Cloneable {
 		{
 			GL11.glTexCoord2f(0, 0);
 			GL11.glVertex2f(0, 0);
-			GL11.glTexCoord2f(0, ((Texture) texture).getHeight());
+			GL11.glTexCoord2f(0, texture.getHeight());
 			GL11.glVertex2f(0, drawHeight);
-			GL11.glTexCoord2f(((Texture) texture).getWidth(), ((Texture) texture).getHeight());
+			GL11.glTexCoord2f(texture.getWidth(), texture.getHeight());
 			GL11.glVertex2f(drawWidth,drawHeight);
-			GL11.glTexCoord2f(((Texture) texture).getWidth(), 0);
+			GL11.glTexCoord2f(texture.getWidth(), 0);
 			GL11.glVertex2f(drawWidth,0);
 		}
 		GL11.glEnd();
@@ -259,7 +260,7 @@ public class Renderable extends Identity implements Cloneable {
 			for (Addon a : this.addons) { 
 				if (a.renderBehind == behindStatus) {
 					//Establish the main Renderable's current position, including special logic for Movables
-					Rectangle2D.Double calcRec = ((Renderable) this).fullBoundingRectangle();
+					Rectangle2D.Double calcRec = this.fullBoundingRectangle();
 
 					//Movables need some extra logic because their shadows end up in weird places otherwise
 					if (this instanceof Movable) {
@@ -280,6 +281,7 @@ public class Renderable extends Identity implements Cloneable {
 	}
 
 
+	@Override
 	public Object clone() throws CloneNotSupportedException {return super.clone();}
 
 	/**
@@ -364,10 +366,10 @@ public class Renderable extends Identity implements Cloneable {
 	public Rectangle2D.Double smallBoundingRectangle(Point2D.Double where) {
 		//"Results obtained through direct experimentation"
 		return new Rectangle2D.Double(
-				where.x + (double) (1.0/10.5)*this.getWidth(),
-				where.y + (double) (6.0/7.0)*this.getHeight(),
-				this.getWidth() - (double) (2.0/10.5)*this.getWidth(), 
-				(double) (this.getHeight()/7.0)
+				where.x + 1.0/10.5*this.getWidth(),
+				where.y + 6.0/7.0*this.getHeight(),
+				this.getWidth() - 2.0/10.5*this.getWidth(), 
+				this.getHeight()/7.0
 				);
 	}
 

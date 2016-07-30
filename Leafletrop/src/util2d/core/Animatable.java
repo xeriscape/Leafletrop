@@ -29,6 +29,7 @@ public class Animatable extends Renderable implements Cloneable  {
 	 * @see util2d.core.helper.Animation#animate()
 	 * @see util2d.core.Renderable#render(java.awt.geom.Point2D.Double)
 	 */
+	@Override
 	public void render() {
 		this.render(this.currentPosition);
 	}
@@ -43,6 +44,7 @@ public class Animatable extends Renderable implements Cloneable  {
 	 * @see util2d.core.helper.Animation#animate()
 	 * @see util2d.core.Renderable#render(java.awt.geom.Point2D.Double)
 	 */
+	@Override
 	public void render(Point2D.Double p) {
 		if (this.current_animation.animate()) { //Animate...
 			this.t = this.current_animation.current_frame;
@@ -59,6 +61,7 @@ public class Animatable extends Renderable implements Cloneable  {
 	/* (non-Javadoc)
 	 * @see util2d.Renderable#toString()
 	 */
+	@Override
 	public String toString() {
 		String result = "";
 		
@@ -105,5 +108,6 @@ public class Animatable extends Renderable implements Cloneable  {
 		this.t = this.current_animation.current_frame;
 	}
 	
+	@Override
 	public Object clone() throws CloneNotSupportedException {return super.clone();}
 }
