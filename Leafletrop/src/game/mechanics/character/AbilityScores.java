@@ -4,51 +4,9 @@ public class AbilityScores {
 	//Base scores
 	public int Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma;
 
-	public int getStrength() {
-		return Strength;
-	}
-
-	public void setStrength(int strength) {
-		Strength = strength;
-	}
-
-	public int getDexterity() {
-		return Dexterity;
-	}
-
-	public void setDexterity(int dexterity) {
-		Dexterity = dexterity;
-	}
-
-	public int getConstitution() {
-		return Constitution;
-	}
-
-	public void setConstitution(int constitution) {
-		Constitution = constitution;
-	}
-
-	public int getIntelligence() {
-		return Intelligence;
-	}
-
-	public void setIntelligence(int intelligence) {
-		Intelligence = intelligence;
-	}
-
-	public int getWisdom() {
-		return Wisdom;
-	}
-
-	public void setWisdom(int wisdom) {
-		Wisdom = wisdom;
-	}
-
-	public int getCharisma() {
-		return Charisma;
-	}
-
-	public void setCharisma(int charisma) {
-		Charisma = charisma;
-	}
+	//Derived stuff
+	
+	//Health
+	private int HP, maxHP, nonlethalDamage, damageReduction;
+	
 }

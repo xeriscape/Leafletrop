@@ -56,7 +56,6 @@ public class Renderable extends Identity implements Cloneable {
 	public double transparency=0.0;
 	public boolean respectsForegroundTransparency = true;
 
-
 	//--------------------------------------------------------------------------------------------------------
 
 	@Override
