@@ -24,7 +24,7 @@ public class CollisionTest extends GameScene {
 	String[] philes = {"animate/1.png", "animate/2.png", "animate/3.png", "animate/3.png"};
 	String[] pPhiles = {"playuh/1.png", "playuh/2.png", "playuh/3.png", "playuh/4.png"};
 	String[] oPhiles = {"obstacles/1.png", "obstacles/2.png", "obstacles/3.png", "obstacles/4.png", "obstacles/5.png", "obstacles/6.png"};
-	int tH=100, tW=100;
+	int tH=GLOBALS.getDefaultTileHeight() , tW=GLOBALS.getDefaultTileWidth();
 
 	/**
 	 * Start the example
@@ -34,8 +34,8 @@ public class CollisionTest extends GameScene {
 	@Override
 	public void start() throws Exception {
 		//Initialise display
-		this.screenHeight = GLOBALS.default_screen_height ;
-		this.screenWidth = GLOBALS.default_screen_width;
+		this.screenHeight = GLOBALS.getDefaultScreenHeight();
+		this.screenWidth = GLOBALS.getDefaultScreenWidth();
 		this.initGL("Leafletrop - Collision and Map Test");
 
 		//Initialise map
@@ -62,7 +62,7 @@ public class CollisionTest extends GameScene {
 			this.sceneMap.tileAtCoordinates(new Point2D.Double(screenWidth-1, 1)).doRender = false;
 			this.sceneMap.tileAtCoordinates(new Point2D.Double(screenWidth-1, screenHeight-1)).doRender = false;
 			
-			GLOBALS.currentMap = this;
+			GLOBALS.setCurrentMap(this);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -173,7 +173,7 @@ public class CollisionTest extends GameScene {
 		}
 
 		this.playerCharacter = isToBeRendered[0];
-		GLOBALS.playerCharacter = this.playerCharacter;
+		GLOBALS.setPlayerCharacter(this.playerCharacter);
 		
 		isToBeRendered[0].setWidth(68);
 		isToBeRendered[0].setHeight(124);

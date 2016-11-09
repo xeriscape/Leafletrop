@@ -39,31 +39,31 @@ public class CharacterBuilder {
 		defaultSkeleton.setPoint("HEAD", new Point2D.Double(0, 0));
 		
 		//Upper torso is normally at (13,67)
-		defaultSkeleton.setPoint("UPPER_TORSO", new Point2D.Double( (13.0/58.0)*GLOBALS.default_character_width, (67.0/124.0) * GLOBALS.default_character_height));
+		defaultSkeleton.setPoint("UPPER_TORSO", new Point2D.Double( (13.0/58.0)*GLOBALS.getDefaultCharacterWidth(), (67.0/124.0) * GLOBALS.getDefaultCharacterHeight()));
 		
 		//Lower torso is normally at (13,91)
-		defaultSkeleton.setPoint("LOWER_TORSO", new Point2D.Double( (13.0/58.0)*GLOBALS.default_character_width, (91.0/124.0) * GLOBALS.default_character_height));
+		defaultSkeleton.setPoint("LOWER_TORSO", new Point2D.Double( (13.0/58.0)*GLOBALS.getDefaultCharacterWidth(), (91.0/124.0) * GLOBALS.getDefaultCharacterHeight()));
 		
 		//Right hand is normally at (13, 73)
-		defaultSkeleton.setPoint("R_ARM", new Point2D.Double( (13.0/58.0)*GLOBALS.default_character_width, (73.0/124.0) * GLOBALS.default_character_height));
+		defaultSkeleton.setPoint("R_ARM", new Point2D.Double( (13.0/58.0)*GLOBALS.getDefaultCharacterWidth(), (73.0/124.0) * GLOBALS.getDefaultCharacterHeight()));
 		
 		//Left hand is normally at (29, 73)
-		defaultSkeleton.setPoint("L_ARM", new Point2D.Double( (29.0/58.0)*GLOBALS.default_character_width, (73.0/124.0) * GLOBALS.default_character_height));
+		defaultSkeleton.setPoint("L_ARM", new Point2D.Double( (29.0/58.0)*GLOBALS.getDefaultCharacterWidth(), (73.0/124.0) * GLOBALS.getDefaultCharacterHeight()));
 		
 		//Right leg is normally at (11, 102)
-		defaultSkeleton.setPoint("R_LEG", new Point2D.Double( (11.0/58.0)*GLOBALS.default_character_width, (102.0/124.0) * GLOBALS.default_character_height));
+		defaultSkeleton.setPoint("R_LEG", new Point2D.Double( (11.0/58.0)*GLOBALS.getDefaultCharacterWidth(), (102.0/124.0) * GLOBALS.getDefaultCharacterHeight()));
 		
 		//Left leg is normally at (27, 102)
-		defaultSkeleton.setPoint("L_LEG", new Point2D.Double( (27.0/58.0)*GLOBALS.default_character_width, (102.0/124.0) * GLOBALS.default_character_height));
+		defaultSkeleton.setPoint("L_LEG", new Point2D.Double( (27.0/58.0)*GLOBALS.getDefaultCharacterWidth(), (102.0/124.0) * GLOBALS.getDefaultCharacterHeight()));
 		
 		
 		/* Figuring out shadows involves mathematics */
 		/* ########### */
 		//Shadows are used to hint at bounding rects
-		Rectangle2D.Double calcRec = new Rectangle2D.Double(0 + 1.0/10.5*GLOBALS.default_character_width * GLOBALS.width_factor,
-				0 + 6.0/7.0*GLOBALS.default_character_height * GLOBALS.height_factor,
-				GLOBALS.default_character_width * GLOBALS.width_factor - 2.0/10.5*GLOBALS.default_character_width * GLOBALS.width_factor, 
-				GLOBALS.default_character_height * GLOBALS.height_factor/7.0
+		Rectangle2D.Double calcRec = new Rectangle2D.Double(0 + 1.0/10.5*GLOBALS.getDefaultCharacterWidth() * GLOBALS.getWidthFactor(),
+				0 + 6.0/7.0*GLOBALS.getDefaultCharacterHeight() * GLOBALS.getHeightFactor(),
+				GLOBALS.getDefaultCharacterWidth() * GLOBALS.getWidthFactor() - 2.0/10.5*GLOBALS.getDefaultCharacterWidth() * GLOBALS.getWidthFactor(), 
+				GLOBALS.getDefaultCharacterHeight() * GLOBALS.getHeightFactor()/7.0
 				);
 		//Shadow encompasses the bounding rect. "Results obtained through direct experimentation."
 		double horiOffset = calcRec.getWidth()*0.2;    //Shadows are a bit larger than the actual collision rectangle,
@@ -74,7 +74,7 @@ public class CharacterBuilder {
 		//Positioning
 		double y_pos = y_siz-y_siz/2;
 		/* ########### */
-		defaultSkeleton.setPoint("SHADOW", new Point2D.Double(0,y_pos*GLOBALS.height_factor ) );
+		defaultSkeleton.setPoint("SHADOW", new Point2D.Double(0,y_pos*GLOBALS.getHeightFactor() ) );
 		
 		//That's all the default points set
 		CharacterBuilder.isInitialized = true;
@@ -107,8 +107,8 @@ public class CharacterBuilder {
 		switch (which) {
 			case HUMANOID:
 				//Set default dimensions
-				product.setHeight(GLOBALS.default_character_height);
-				product.setWidth(GLOBALS.default_character_width);
+				product.setHeight(GLOBALS.getDefaultCharacterHeight());
+				product.setWidth(GLOBALS.getDefaultCharacterWidth());
 				
 				break;
 				

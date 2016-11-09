@@ -135,11 +135,11 @@ public class GameScene extends Scene {
 			//Am I an object that's blocking view of the player character? If so, render semi-transparently
 			toRender[j].transparency = 0.0;
 			//Try to do the less expensive checks first
-			if (toRender[j].respectsForegroundTransparency && GLOBALS.transparency_foreground > 0) {
+			if (toRender[j].respectsForegroundTransparency && GLOBALS.getTransparencyForeground() > 0) {
 				if (!(toRender[j].equals(this.playerCharacter)))  {
 					if ((toRender[j].reducedBoundingRectangle(10, 10).intersects(this.playerCharacter.smallBoundingRectangle()))) {
 						if (toRender[j].fullBoundingRectangle().getMaxY() > playerCharacter.fullBoundingRectangle().getMaxY()) {
-							toRender[j].transparency = GLOBALS.transparency_foreground;
+							toRender[j].transparency = GLOBALS.getTransparencyForeground();
 						}
 					}
 				}
@@ -153,7 +153,7 @@ public class GameScene extends Scene {
 
 		//5.) Done, display the results
 		Display.update();
-		Display.sync(GLOBALS.framerate);
+		Display.sync(GLOBALS.getFramerate());
 	}
 
 	/**
