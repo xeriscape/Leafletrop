@@ -1,6 +1,7 @@
 package util2d.core;
 
 import util2d.scene.GameScene;
+import org.lwjgl.input.Keyboard;
 
 public final class GLOBALS {
 	/**
@@ -17,6 +18,8 @@ public final class GLOBALS {
 	private static final int standard_tile_height = 96, standard_tile_width = 96; //Dimensions of an individual tile (default maps are 7x13)
 	private static final int standard_framerate = 60; //Default FPS, this should be 30 or 60
 	private static final double standard_transparency_foreground = 0.5; //Partial see-through for objects in front of the player
+	private static final int standard_key_left=Keyboard.KEY_A, standard_key_right=Keyboard.KEY_D, standard_key_up=Keyboard.KEY_W, standard_key_down=Keyboard.KEY_S;
+	
 	
 	/**
 	 * These are the values actually used elsewhere. By default the game uses the fallback values.
@@ -27,6 +30,8 @@ public final class GLOBALS {
 	private static int defaultScreenHeight = standard_screen_height, 	defaultScreenWidth = standard_screen_width;
 	private static int defaultTileHeight = standard_tile_height, defaultTileWidth = standard_tile_width;
 	private static double transparencyForeground = standard_transparency_foreground;
+	private static int keyLeft=standard_key_left, keyRight=standard_key_right, keyUp=standard_key_up, keyDown=standard_key_down;
+
 	
 	/**
 	 * Helper function for converting frames to seconds (by default, divide by 60)
@@ -156,4 +161,44 @@ public final class GLOBALS {
 	public static double getHeightFactor() {
 		return ((double) defaultCharacterHeight/(double) assumedCharHeight);
 	}
+
+	
+	//Control scheme stuff. If you try to set a non-existent key, the system falls back on the default.
+	public static int getKeyLeft() {
+		return keyLeft;
+	}
+
+	public static void setKeyLeft(int keyLeft) {
+		if (Keyboard.getKeyName(keyLeft) != null) GLOBALS.keyLeft = keyLeft;
+		else GLOBALS.keyLeft = GLOBALS.standard_key_left;
+	}
+
+	public static int getKeyRight() {
+		return keyRight;
+	}
+
+	public static void setKeyRight(int keyRight) {
+		if (Keyboard.getKeyName(keyRight) != null) GLOBALS.keyRight = keyRight;
+		else GLOBALS.keyRight = GLOBALS.standard_key_right;
+	}
+
+	public static int getKeyUp() {
+		return keyUp;
+	}
+
+	public static void setKeyUp(int keyUp) {
+		if (Keyboard.getKeyName(keyUp) != null) GLOBALS.keyUp = keyUp;
+		else GLOBALS.keyUp = GLOBALS.standard_key_up;
+	}
+
+	public static int getKeyDown() {
+		return keyDown;
+	}
+
+	public static void setKeyDown(int keyDown) {
+		if (Keyboard.getKeyName(keyDown) != null) GLOBALS.keyDown = keyDown;
+		else GLOBALS.keyDown = GLOBALS.standard_key_down;
+	}
+	
+	
 }

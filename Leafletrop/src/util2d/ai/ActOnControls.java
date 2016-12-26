@@ -5,6 +5,7 @@ import java.awt.geom.Point2D;
 import org.lwjgl.input.Keyboard;
 
 import util2d.actor.Actor;
+import util2d.core.GLOBALS;
 import util2d.map.Map;
 
 public class ActOnControls extends Behavior {
@@ -28,26 +29,26 @@ public class ActOnControls extends Behavior {
 		Map sceneMap = m;
 		
 		//If the player is pressing arrow keys, that means movement
-				if (Keyboard.isKeyDown(Keyboard.KEY_LEFT))
+				if (Keyboard.isKeyDown(GLOBALS.getKeyLeft()))
 				{ //If player is not aiming left yet, aim player left
 					if (! (((sceneMap.xyTile(self.currentGoal))[0]) < (sceneMap.xyTile(self.getCurrentPosition())[0] )))
 						self.currentGoal = (new Point2D.Double( sceneMap.tileCenter(sceneMap.xyTile( self.currentGoal )[0]-1 , sceneMap.xyTile( self.currentGoal )[1]).getX()  , self.currentGoal.y));
 				}
 
-				else if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
+				else if (Keyboard.isKeyDown(GLOBALS.getKeyRight()))
 				{ //If player is not aiming right yet, aim player right
 					if (! (((sceneMap.xyTile(self.currentGoal))[0]) > (sceneMap.xyTile(self.getCurrentPosition())[0] )))
 						self.currentGoal = (new Point2D.Double( sceneMap.tileCenter(sceneMap.xyTile( self.currentGoal )[0]+1 , sceneMap.xyTile( self.currentGoal )[1]).getX()  , self.currentGoal.y));
 				}
 
-				if (Keyboard.isKeyDown(Keyboard.KEY_DOWN))
+				if (Keyboard.isKeyDown(GLOBALS.getKeyDown()))
 				{ //If player is not aiming down yet, aim player down
 					if (! (((sceneMap.xyTile(self.currentGoal))[1]) > (sceneMap.xyTile(self.getCurrentPosition())[1] )))
 						self.currentGoal = (new Point2D.Double(self.currentGoal.x ,  sceneMap.tileCenter(sceneMap.xyTile( self.currentGoal )[0] , sceneMap.xyTile( self.currentGoal )[1]+1).getY()));
 				}
 
 
-				else if (Keyboard.isKeyDown(Keyboard.KEY_UP))
+				else if (Keyboard.isKeyDown(GLOBALS.getKeyUp()))
 				{ //If player is not aiming up yet, aim player up
 					if (! (((sceneMap.xyTile(self.currentGoal))[1]) < (sceneMap.xyTile(self.getCurrentPosition())[1] )))
 						self.currentGoal = (new Point2D.Double(self.currentGoal.x ,  sceneMap.tileCenter(sceneMap.xyTile( self.currentGoal )[0] , sceneMap.xyTile( self.currentGoal )[1]-1).getY()));
@@ -56,20 +57,15 @@ public class ActOnControls extends Behavior {
 				//If player lets go of a key, stop 'em
 				if (Keyboard.next()) {
 					if (Keyboard.getEventKeyState() == false) {
-						switch (Keyboard.getEventKey()) {
-						case Keyboard.KEY_LEFT:
-						case Keyboard.KEY_RIGHT:
+						int eventKey = Keyboard.getEventKey();
+						
+						if ((eventKey == GLOBALS.getKeyLeft())||(eventKey == GLOBALS.getKeyRight()))
 							self.currentGoal = (new Point2D.Double(self.getCurrentPosition().x + (self.calculateVelocities()[0]*0.1), self.currentGoal.y));
-							break;
 
-						case Keyboard.KEY_UP:
-						case Keyboard.KEY_DOWN:
+						if ((eventKey == GLOBALS.getKeyUp())||(eventKey == GLOBALS.getKeyDown()))
 							self.currentGoal =(new Point2D.Double(self.currentGoal.x, self.getCurrentPosition().y + (self.calculateVelocities()[1]*0.1)));
-							break;
 						}
 					}
 				}
 
 	}
-
-}
