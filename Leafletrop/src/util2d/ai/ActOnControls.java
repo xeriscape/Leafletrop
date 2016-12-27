@@ -6,6 +6,7 @@ import org.lwjgl.input.Keyboard;
 
 import util2d.actor.Actor;
 import util2d.core.GLOBALS;
+import util2d.core.Movable;
 import util2d.map.Map;
 
 public class ActOnControls extends Behavior {
@@ -27,6 +28,9 @@ public class ActOnControls extends Behavior {
 	public void process(Map m, Actor self, Actor player, int keyboard) {
 		// TODO Auto-generated method stub
 		Map sceneMap = m;
+		
+		//This is needed to allow movement processing
+		if (!self.isMoving()) self.moveTo(self.getCurrentPosition(), Movable.MODE_ACCELERATE);
 		
 		//If the player is pressing arrow keys, that means movement
 				if (Keyboard.isKeyDown(GLOBALS.getKeyLeft()))
