@@ -7,7 +7,7 @@ import util2d.core.helper.Animation;
 import util2d.core.helper.Collision;
 import util2d.map.Map;
 
-public class Collisible extends Movable implements Cloneable {
+public class Collisible extends Movable {
 	
 	private int ignore = 5;
 	public boolean collisionEnabled = true;
@@ -25,7 +25,7 @@ public class Collisible extends Movable implements Cloneable {
 	 * @param collisionCandidates The set of Collisibles with which this Collisible could collide. Normally, this includes all Collisibles on the map.
 	 * @param m The map on which the Collisible is being displayed.
 	 */
-	public void render(Renderable[] collisionCandidates, Map m) throws IllegalArgumentException, CloneNotSupportedException {
+	public void render(Renderable[] collisionCandidates, Map m) throws IllegalArgumentException {
 		this.render(collisionCandidates, 0, collisionCandidates.length, m);
 	}
 	
@@ -37,7 +37,7 @@ public class Collisible extends Movable implements Cloneable {
 	 * @param maxpos The index at which Collision-checking should cease.
 	 * @param m The map on which the Collisible is being displayed.
 	 */	
-	public void render(Renderable[] collisionCandidates, int minpos, int maxpos, Map m) throws IllegalArgumentException, CloneNotSupportedException {
+	public void render(Renderable[] collisionCandidates, int minpos, int maxpos, Map m) throws IllegalArgumentException {
 		//TODO: Split out the collision detection logic in the loop
 		//TODO: Allow for checks not at current position
 		
@@ -77,8 +77,4 @@ public class Collisible extends Movable implements Cloneable {
 		}
 		super.render(); //Next layer up: Handle movement
 	}
-	
-
-	@Override
-	public Object clone() throws CloneNotSupportedException {return super.clone();}
 }

@@ -96,7 +96,7 @@ public class GameScene extends Scene {
 	 * @param toRender The Renderables to display.
 	 */
 	@Override
-	public void update(Renderable[] toRender) throws IllegalArgumentException, CloneNotSupportedException {
+	public void update(Renderable[] toRender) throws IllegalArgumentException {
 		//1.) Clear screen
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
@@ -186,6 +186,7 @@ public class GameScene extends Scene {
 			Display.create();
 			Display.setVSyncEnabled(true);
 		} catch (LWJGLException e) {
+			//TODO: Exception logging
 			e.printStackTrace();
 			System.exit(0);
 		}

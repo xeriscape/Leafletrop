@@ -368,7 +368,9 @@ public class Movable extends Animatable implements Cloneable {
 	}
 
 	/**
-	 * Default bounding rectangle of the object several steps in the future.
+	 * Default bounding rectangle of the object several steps in the future. Note that d can be
+	 * negative, but that the result may not correctly represent the object's previous position
+	 * (it's just the current movement inverted).
 	 * 
 	 * @param d Number of frames to look ahead
 	 * 
