@@ -5,7 +5,6 @@ package util2d.core.helper;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.Rectangle2D.Double;
 
 import util2d.core.Movable;
 import util2d.core.Renderable;

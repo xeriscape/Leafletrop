@@ -80,6 +80,7 @@ public class GameScene extends Scene {
 	 * @param toRender The Renderables to consider.
 	 * @returns Renderables ordered by ascending getCenterY() values.
 	 */
+	@SuppressWarnings("unchecked")
 	private Object[] getRenderingOrder(Renderable[] toRender) {
 		HashMap<Integer, Double> hm = new HashMap<Integer, Double>();
 		for (int i = 0; i < toRender.length; i++) hm.put(i, toRender[i].fullBoundingRectangle().getMaxY() );
@@ -222,6 +223,7 @@ public class GameScene extends Scene {
  * Helper class purely for sorting Renderables by X-value
  * 
  */
+@SuppressWarnings("rawtypes")
 class ValueComparator implements Comparator {
 	HashMap<Integer, Double> base;
 
