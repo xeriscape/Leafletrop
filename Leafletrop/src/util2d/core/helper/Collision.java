@@ -27,7 +27,7 @@ public class Collision {
 	 * @param currRec The Rectangle2D.Double to be examined
 	 * @return [topLeft, topRight, bottomLeft, bottomRight]
 	 */
-	public static Point2D.Double[] rectangleFacts(Rectangle2D.Double currRec) {
+	public static Point2D.Double[] getCorners(Rectangle2D.Double currRec) {
 		double w = currRec.getMaxX() - currRec.getMinX();
 		double h = currRec.getMaxY() - currRec.getMinY();
 		double x = currRec.x;
@@ -55,7 +55,7 @@ public class Collision {
 		Rectangle2D.Double recHorizontal = mov.boundingRectangle(1);
 		recHorizontal.y = mov.boundingRectangle(0).y;
 		
-		Point2D.Double[] horiPoints = rectangleFacts(recHorizontal);
+		Point2D.Double[] horiPoints = getCorners(recHorizontal);
 		
 		boolean horizontalCollision = 
 				  (m.tileAtCoordinates(horiPoints[0]).isPassable == false
@@ -67,7 +67,7 @@ public class Collision {
 		//Only vertical movement
 		Rectangle2D.Double recVertical = mov.boundingRectangle(1);
 		recVertical.x = mov.boundingRectangle(0).x;
-		Point2D.Double[] vertiPoints = rectangleFacts(recVertical);
+		Point2D.Double[] vertiPoints = getCorners(recVertical);
 		
 		boolean verticalCollision = 
 				  (m.tileAtCoordinates(vertiPoints[0]).isPassable == false
