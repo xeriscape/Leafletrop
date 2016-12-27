@@ -8,6 +8,8 @@ import java.util.*;
 
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.opengl.Texture;
+import org.apache.logging.log4j.*;
+
 import util2d.actor.Actor;
 import util2d.actor.Addon;
 import util2d.core.Animatable;
@@ -26,6 +28,9 @@ public class CollisionTest extends GameScene {
 	String[] oPhiles = {"obstacles/1.png", "obstacles/2.png", "obstacles/3.png", "obstacles/4.png", "obstacles/5.png", "obstacles/6.png"};
 	int tH=GLOBALS.getDefaultTileHeight() , tW=GLOBALS.getDefaultTileWidth();
 
+	static Logger logger;
+	
+	
 	/**
 	 * Start the example
 	 * @throws Exception 
@@ -65,6 +70,7 @@ public class CollisionTest extends GameScene {
 			GLOBALS.setCurrentMap(this);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			logger.fatal(e.getStackTrace().toString());
 			e.printStackTrace();
 			System.exit(0);
 		}
@@ -102,12 +108,12 @@ public class CollisionTest extends GameScene {
 			oresources = Renderable.load_res(oPhiles, "obstacles");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
+			logger.fatal(e1.getStackTrace().toString());
 			e1.printStackTrace();
 			System.exit(0);
 		} 
 
 		//Load background
-		//public Renderable(Texture tx, Point2D.Double p, int width, int height)
 		Renderable bck = new Renderable(Renderable.load_res("background.png", "background"), new Point2D.Double(0, 0), screenWidth, screenHeight);
 		this.background = bck;
 
@@ -159,8 +165,8 @@ public class CollisionTest extends GameScene {
 				
 				back[i-(num_objs/2)] = new Animatable(argl, new Point2D.Double(xxx, yyy)); 
 			}
-			System.out.print("CREATED: ");
-			System.out.print(objs[i].toString());
+			
+			logger.debug(String.format("CREATED: {0}", objs[i].toString()));
 		}
 
 		//Create list of objects to render
@@ -177,23 +183,8 @@ public class CollisionTest extends GameScene {
 		
 		isToBeRendered[0].setWidth(68);
 		isToBeRendered[0].setHeight(124);
-		System.err.print("\n\n"+this.playerCharacter.getWidth());
 		((Movable) isToBeRendered[0]).setDistancePerSecond(300.0);
 		((Actor) isToBeRendered[0]).setAiMode(new util2d.ai.ActOnControls());
-
-		//Transparency info
-		/*System.out.print("\n");
-		byte[] texData = isToBeRendered[0].t.getTextureData();
-		for (int px=0; px<isToBeRendered[0].t.getTextureWidth(); px++) {
-			for (int py=0; py<isToBeRendered[0].t.getTextureHeight(); py++) {
-				byte alpha = texData[4 * (px * isToBeRendered[0].t.getTextureWidth() + py) + 3];
-				if (alpha == 0) System.out.print("0");
-				else System.out.print("1");
-			}
-			System.out.print("\n");
-		}
-		System.out.print("\n");*/
-
 
 		//OK, shadow time
 		for (Renderable r:isToBeRendered) {
@@ -244,7 +235,8 @@ public class CollisionTest extends GameScene {
 			this.playerCharacter.addAddon(pnts);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			logger.error(e1.getStackTrace().toString());
+			//e1.printStackTrace();
 		}
 		
 
@@ -256,12 +248,13 @@ public class CollisionTest extends GameScene {
 			} catch (IllegalArgumentException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (CloneNotSupportedException e) {
+			} /*catch (CloneNotSupportedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 
 			if (Display.isCloseRequested()) {
+				logger.debug("User requested close");
 				Display.destroy();
 				System.exit(0);
 			}
@@ -269,15 +262,14 @@ public class CollisionTest extends GameScene {
 	}
 
 	/**
-	 * Main class, responsible for display logic (and other things)
-	 * @throws CloneNotSupportedException 
+	 * Main class, responsible for display logic (and other things) 
 	 * @throws IOException 
 	 */
 	@Override
-	public void update(Renderable[] toRender) throws IllegalArgumentException, CloneNotSupportedException {	
+	public void update(Renderable[] toRender) throws IllegalArgumentException {	
 		//Player controls
-		Movable n = (Movable) toRender[0];
-		if (!n.isMoving()) n.moveTo(n.getCurrentPosition(), Movable.MODE_ACCELERATE);
+		//Movable n = (Movable) toRender[0];
+		//if (!n.isMoving()) n.moveTo(n.getCurrentPosition(), Movable.MODE_ACCELERATE);
 
 		//Display
 		super.update(toRender);
@@ -291,9 +283,9 @@ public class CollisionTest extends GameScene {
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
-	 * @throws CloneNotSupportedException
 	 */
 	public static void main(String[] argv) throws Exception {
+		logger = LogManager.getRootLogger();
 		CollisionTest nt = new CollisionTest();
 		nt.start();
 	}
