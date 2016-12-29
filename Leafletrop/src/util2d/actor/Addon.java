@@ -5,6 +5,8 @@ import org.newdawn.slick.opengl.Texture;
 //This'll follow another Renderable around
 //Can be a shadow, a sword, a halo, whatevs
 public class Addon extends util2d.core.Renderable {	
+	public static final boolean FRONT = false, BEHIND = true;
+	
 	//Distance from superior Renderable's centre
 	public double attachX = 0.0, attachY = 0.0;
 

@@ -204,7 +204,7 @@ public class Renderable extends Identity implements Cloneable {
 	 */
 	public void render(Point2D.Double p, Double transparency ) {
 		//Addons that go BEHIND the renderable are rendered FIRST
-		this.renderAddons(true);
+		this.renderAddons(Addon.BEHIND);
 		
 		// --- Core rendering logic starts here ---
 
@@ -247,7 +247,7 @@ public class Renderable extends Identity implements Cloneable {
 		// --- Core rendering logic ends here ---
 
 		//Addons that go DO NOT GO BEHIND the Renderable are rendered LAST
-		this.renderAddons(false);
+		this.renderAddons(Addon.FRONT);
 	}
 	
 	/**
@@ -256,32 +256,29 @@ public class Renderable extends Identity implements Cloneable {
 	 */
 	public void renderAddons(boolean behindStatus) {
 		if (this.addons != null) {
-			for (Addon a : this.addons) { 
-				if (a.renderBehind == behindStatus) {
+			for (Addon addon : this.addons) { 
+				if (addon.renderBehind == behindStatus) {
 					//Establish the main Renderable's current position, including special logic for Movables
-					Rectangle2D.Double calcRec = this.fullBoundingRectangle();
+					Rectangle2D.Double parentBoundingRectangle = this.fullBoundingRectangle();
 
 					//Movables need some extra logic because their shadows end up in weird places otherwise
 					if (this instanceof Movable) {
 						//For Movables, we need to display the shadow where the Movable was last.
 						//This means we have to check if it moved.
-						calcRec.x = ((Movable) this).isSkip_last_x() ? ((Movable) this).fullBoundingRectangle(0).getX() : ((Movable) this).fullBoundingRectangle(-1).getX();
-						calcRec.y = ((Movable) this).isSkip_last_y() ? ((Movable) this).fullBoundingRectangle(0).getY() : ((Movable) this).fullBoundingRectangle(-1).getY();
+						parentBoundingRectangle.x = ((Movable) this).isSkip_last_x() ? ((Movable) this).fullBoundingRectangle(0).getX() : ((Movable) this).fullBoundingRectangle(-1).getX();
+						parentBoundingRectangle.y = ((Movable) this).isSkip_last_y() ? ((Movable) this).fullBoundingRectangle(0).getY() : ((Movable) this).fullBoundingRectangle(-1).getY();
 					}
 
 					//Update position of the addon
-					a.currentPosition = new Point2D.Double(calcRec.x + a.attachX, calcRec.y + a.attachY);
+					//TODO: Attachment point logic
+					addon.currentPosition = new Point2D.Double(parentBoundingRectangle.x + addon.attachX, parentBoundingRectangle.y + addon.attachY);
 
 					//Display the addon
-					a.render();
+					addon.render();
 				}
 			}
 		}
 	}
-
-
-	@Override
-	public Object clone() throws CloneNotSupportedException {return super.clone();}
 
 	/**
 	 * Static utility function to load a set of Textures from given files / directory.
