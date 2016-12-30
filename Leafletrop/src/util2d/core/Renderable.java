@@ -20,7 +20,7 @@ import util2d.actor.Addon;
  * This is to allow "object-based" rendering in the "main loop".
  *
  */
-public class Renderable extends Identity implements Cloneable {
+public class Renderable extends Identity {
 	//Texture
 	protected Texture t;
 
@@ -52,7 +52,7 @@ public class Renderable extends Identity implements Cloneable {
 	
 	protected ArrayList<Addon> addons = null;
 	
-	//Stuff
+	//Objects can have a baseline transparency and choose whether they go semi-visible when in front of player
 	public double transparency=0.0;
 	public boolean respectsForegroundTransparency = true;
 
