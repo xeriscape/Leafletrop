@@ -21,10 +21,10 @@ import util2d.actor.Addon;
  *
  */
 public class Renderable extends Identity {
-	//Texture
+	//A Renderable displays a Texture. Child classes manipulate that to implement animations etc.
 	protected Texture t;
 
-	//Dimensions
+	//Renderables have a position and dimensions
 	protected Point2D.Double currentPosition;
 	public Point2D.Double getCurrentPosition() {
 		return this.currentPosition;
@@ -44,15 +44,17 @@ public class Renderable extends Identity {
 		if (h>0) this.dimensions[1]=h;
 	}
 
+	//Projectiles default to full bounding rectangles, characters only use the lower part
 	protected boolean usesFullBoundingRectangle = false;
 
 	//TODO: Remove remaining "special logic" for Shadows
 	static boolean shadowsEnabled = false; //TODO: Move to settings class
 	private static Texture shadowTexture = null;
 	
+	//Renderables can have addons (such as shadows) that move with them
 	protected ArrayList<Addon> addons = null;
 	
-	//Objects can have a baseline transparency and choose whether they go semi-visible when in front of player
+	//Renderables can be partially transparent (0=opaque, 1=invisible) and choose whether they go semi-visible when in front of player
 	public double transparency=0.0;
 	public boolean respectsForegroundTransparency = true;
 
@@ -203,7 +205,7 @@ public class Renderable extends Identity {
 	 * @param p The point where it will be rendered (leave blank to use its current position)
 	 */
 	public void render(Point2D.Double p, Double transparency ) {
-		//Addons that go BEHIND the renderable are rendered FIRST
+		//Addons that go BEHIND the renderable are rendered BEFORE the Renderable itself
 		this.renderAddons(Addon.BEHIND);
 		
 		// --- Core rendering logic starts here ---
