@@ -4,6 +4,8 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.lang.IllegalArgumentException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.newdawn.slick.opengl.Texture;
 
 import util2d.core.Renderable;
@@ -30,10 +32,12 @@ public class Map {
 	 * 
 	 */
 	public Map (int screenWidth, int screenHeight, int tileWidth, int tileHeight, int[] isPassable) throws IOException {
+		Logger logger = LogManager.getRootLogger();
+		
 		//Some very basic sanity checking
 		if (screenWidth <= 0 || screenHeight <= 0 || tileWidth <= 0 || tileHeight <= 0) throw new IllegalArgumentException("All parameters must be greater than zero");
-		if (screenWidth % tileWidth != 0 ) {System.err.print("Screen width not divisble by tile width");}
-		if (screenHeight % tileHeight != 0 ) {System.err.print("Screen height not divisble by tile height");}
+		if (screenWidth % tileWidth != 0 ) {logger.error("Screen width "+screenWidth+" not divisible by tile width "+tileWidth);}
+		if (screenHeight % tileHeight != 0 ) {logger.error("Screen height "+screenHeight+" not divisible by tile width "+tileHeight);}
 		
 		this.mapHeight = screenHeight;
 		this.mapWidth = screenWidth;
