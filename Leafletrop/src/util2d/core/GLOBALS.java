@@ -48,7 +48,6 @@ public final class GLOBALS {
 	 * @return The amount of frames that go by in the specified time frame (rounded up, so partial frames are counted)
 	 */
 	public static int secondsToFrames(double numberSeconds) {
-		System.err.println(""+((int) Math.ceil((numberSeconds * framerate)))+" frames in "+numberSeconds+" seconds");
 		return ((int) Math.ceil((numberSeconds * framerate)));
 	}
 	
