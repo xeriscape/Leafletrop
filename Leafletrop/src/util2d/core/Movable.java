@@ -223,13 +223,13 @@ public class Movable extends Animatable implements Cloneable {
 	 */
 	public double[] calculateVelocities() {
 		//Are we moving in goal mode?
-		if (this.goal_mode == MOVE_TO_GOAL) {		
+		if (this.goal_mode == MOVE_TO_GOAL || this.currentOverrideGoal != null) {		
 			double[] d = {0.0, 0.0};
 
 			if (!this.isMoving()) return d;
 
 			//Are we just always moving at top speed? If so, calculate that
-			if (currentMode == MODE_LINEAR) this.currentSpeed = this.distancePerSecond/60; //TODO: Framerate shouldn't be hardcoded
+			if (currentMode == MODE_LINEAR || this.currentOverrideGoal != null) this.currentSpeed = this.distancePerSecond/60; //TODO: Framerate shouldn't be hardcoded
 
 			//Otherwise, accelerate towards top speed
 			if (currentMode == MODE_ACCELERATE) {
@@ -245,7 +245,8 @@ public class Movable extends Animatable implements Cloneable {
 			if (this.currentPosition.y < this.currentGoal.y) ymov=0+Math.min(this.currentGoal.y-this.currentPosition.y, (this.currentSpeed));
 			if (this.currentPosition.y > this.currentGoal.y) ymov=0-Math.min(this.currentPosition.y-this.currentGoal.y, (this.currentSpeed));
 
-			d[0] = Math.min(xmov, this.getWidth()); d[1] = Math.min(ymov, this.getHeight());
+			d[0] = Math.min(xmov, this.getWidth()); 
+			d[1] = Math.min(ymov, this.getHeight());
 
 			return d;
 		}

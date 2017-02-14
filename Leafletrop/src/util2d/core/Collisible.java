@@ -11,6 +11,7 @@ public class Collisible extends Movable {
 	
 	private int ignore = 5;
 	public boolean collisionEnabled = true;
+	public boolean respectsImpassableTiles = true;
 
 	/**
 	 * Create a new Collisible using the specified Animations
@@ -41,21 +42,17 @@ public class Collisible extends Movable {
 		//TODO: Split out the collision detection logic in the loop
 		//TODO: Allow for checks not at current position
 		
-		//Don't process collisions at all while we're in ignore-mode
-		if (this.ignore > 0) {
-			this.ignore--; 
-			return;
-		}
-		
 		//Otherwise: first, check if we will collide with non-passable tiles
 		boolean[] tileStatus = Collision.checkTileCollision(this, m);
 		
 		//Collisions with non-passable tiles lead to skipped moves
-		if (tileStatus[0]) this.skip_next_x = true; //The assignment is done like this to avoid setting skips 
-		if (tileStatus[1]) this.skip_next_y = true; //back to false if they were already true
+		if (this.respectsImpassableTiles) {
+			if (tileStatus[0]) this.skip_next_x = true; //The assignment is done like this to avoid setting skips 
+			if (tileStatus[1]) this.skip_next_y = true; //back to false if they were already true
+		}
 		
 		//Then, if collisions with objects are currently enabled, process those 
-		if (collisionEnabled) {
+		if (collisionEnabled && this.ignore <= 0) {
 			for (int i = minpos; i<maxpos; i++) {
 				//Don't double-process collisions, so don't being at start of array
 				Renderable otherObject = collisionCandidates[i];
@@ -73,11 +70,23 @@ public class Collisible extends Movable {
 						if (Collision.checkHorizontalCollision(this, otherObject, 0)) this.skip_next_x = true;
 						if (Collision.checkVerticalCollision(this, otherObject, 0))   this.skip_next_y = true;
 						
-						//TODO: Then trigger Collisible's behavior
+						//TODO: Then trigger Collisible's behavior		
+						/*//Bumps use move override
+						if (otherObject instanceof Collisible) {
+							((Collisible) otherObject).currentOverrideGoal = new Point2D.Double(otherObject.currentPosition.x+((this.getCurrentPosition().x-this.calculateNextPosition().x)*GLOBALS.secondsToFrames(1)), otherObject.currentPosition.y+otherObject.currentPosition.y+((this.getCurrentPosition().y-this.calculateNextPosition().y)*GLOBALS.secondsToFrames(1)));
+							//if (((Collisible) otherObject).isMoving()) ((Collisible) otherObject).currentOverrideGoal = ((Movable) otherObject).calculateNextPosition(-GLOBALS.secondsToFrames(1));
+							//else ((Collisible) otherObject).moveTo(new Point2D.Double(otherObject.currentPosition.x+((this.getCurrentPosition().x-this.calculateNextPosition().x)*GLOBALS.secondsToFrames(1)), otherObject.currentPosition.y+otherObject.currentPosition.y+((this.getCurrentPosition().y-this.calculateNextPosition().y)*GLOBALS.secondsToFrames(1))), MODE_LINEAR);
+						}*/
 					}
 				}
 			}
 		}
+		
+		//Don't process collisions at all while we're in ignore-mode
+		if (this.ignore > 0) {
+			this.ignore--; 
+		}
+		
 		super.render(); //Next layer up: Handle movement
 	}
 }
