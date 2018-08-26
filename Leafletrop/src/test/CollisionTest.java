@@ -56,7 +56,7 @@ public class CollisionTest extends GameScene {
 				if (column == 0 || column == numColumns-1) passabilityStatus[cellNumber] = 1;
 				if (line == 0 || line == numLines-1) passabilityStatus[cellNumber] = 1;
 				if (column==4 && line ==4)  passabilityStatus[cellNumber] = 1;
-				if (( (column==0)||(column==numColumns-1)) &&( (line==0)||(line==numLines-1))) passabilityStatus[cellNumber] = 0;
+				//if (( (column==0)||(column==numColumns-1)) &&( (line==0)||(line==numLines-1))) passabilityStatus[cellNumber] = 0;
 			}
 		}
 
